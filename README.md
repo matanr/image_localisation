@@ -2,6 +2,15 @@
 - This repository is heavily based on [dino-vit-features](https://github.com/ShirAmir/dino-vit-features).
 It extends the point correspondences section from that repository, and adds patch matching capability based on the matched points.
 - In order to setup, please clone and follow the setup instructions in [dino-vit-features](https://github.com/ShirAmir/dino-vit-features). After the anaconda environment is set and the files are downloaded, clone this repository, and move / copy 'match_correspondences.py' to dino-vit-features.
+- To run, activate the anaconda environment from [dino-vit-features](https://github.com/ShirAmir/dino-vit-features), and execute the command:
+```
+python match_correspondences.py --root_dir data/pairs_root --save_dir data/output --full_pair data/full_images/test_2 --all_patches data/pairs_backup/all_patches_test_2 --all_patches_diff_drone data/pairs_backup/all_patches_test_1
+```
+   - root_dir: directory of pairs of possible matched images
+   - save_dir: output directory, each pair in the root_dir will have a directory with the point correspondences and files with the actual point coordinates and the matching scores.
+   - full_pair: directory with 2 images: a small and a big one. The big one will be cropped to patches and the small will be resized and copied to each crop from the big one to form a pair in root_dir.
+   - all_patches: if the cropping was done before, this directory will hold it. The script will copy random patches from this directory to root_dir.
+   - all_patches_diff_drone: if the cropping was done before, but with a different small image, this directory will hold it. The script will move these files to all_patches and replace the old small image with the new small image from full_pair.
 
 
 # dino-vit-features
