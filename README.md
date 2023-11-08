@@ -1,7 +1,7 @@
 # NOTE AND SETUP
-- This repository is heavily based on [a link](https://github.com/ShirAmir/dino-vit-features).
+- This repository is heavily based on [dino-vit-features](https://github.com/ShirAmir/dino-vit-features).
 It extends the point correspondences section from that repository, and adds patch matching capability based on the matched points.
-- In order to setup, please clone and follow the setup instructions in [a link](https://github.com/ShirAmir/dino-vit-features). After the anaconda environment is set and the files are downloaded, clone this repository, and move / copy 'match_correspondences.py' to dino-vit-features.
+- In order to setup, please clone and follow the setup instructions in [dino-vit-features](https://github.com/ShirAmir/dino-vit-features). After the anaconda environment is set and the files are downloaded, clone this repository, and move / copy 'match_correspondences.py' to dino-vit-features.
 
 
 # dino-vit-features
