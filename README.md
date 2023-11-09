@@ -9,6 +9,7 @@ python match_correspondences.py --root_dir data/pairs_root --save_dir data/outpu
    - root_dir: directory of pairs of possible matched images
    - save_dir: output directory, each pair in the root_dir will have a directory with the point correspondences and files with the actual point coordinates and the matching scores.
    - full_pair: directory with 2 images: a small and a big one. The big one will be cropped to patches and the small will be resized and copied to each crop from the big one to form a pair in root_dir.
+   - should_crop: True if it is the first run, crops the big image and copies the small one with the crops to form pairs. Default is False
    - all_patches: if the cropping was done before, this directory will hold it. The script will copy random patches from this directory to root_dir.
    - all_patches_diff_drone: if the cropping was done before, but with a different small image, this directory will hold it. The script will move these files to all_patches and replace the old small image with the new small image from full_pair.
 

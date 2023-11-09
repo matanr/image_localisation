@@ -417,6 +417,7 @@ if __name__ == "__main__":
     parser.add_argument('--full_pair', type=str, required=True, help='The dir of drone and ortho image pairs.')
     parser.add_argument('--all_patches_diff_drone', type=str, required=False, help='The dir of all backup patches pairs with an old drone image.')
     parser.add_argument('--all_patches', type=str, required=False, help='The dir of all backup patches pairs.')
+    parser.add_argument('--should_crop', default='False', type=str2bool, help="crop the ortho image if True.")
     parser.add_argument('--root_dir', type=str, required=True, help='The root dir of image pairs.')
     parser.add_argument('--save_dir', type=str, required=True, help='The root save dir for image pairs results.')
     parser.add_argument('--load_size', default=224, type=int, help='load size of the input image.')
@@ -438,7 +439,11 @@ if __name__ == "__main__":
     drone_scale = 0.125
 
     with torch.no_grad():
-
+        # prepare directories
+        root_dir = Path(args.root_dir)
+        pair_dirs = [x for x in root_dir.iterdir() if x.is_dir()]
+        save_dir = Path(args.save_dir)
+        save_dir.mkdir(exist_ok=True, parents=True)
         full_pair = Path(args.full_pair)
         full_images = [x for x in full_pair.iterdir() if x.suffix.lower() in ['.jpg', '.png', '.jpeg']]
         ortho_img = ""
@@ -453,7 +458,10 @@ if __name__ == "__main__":
             drone_img = cv.imread(str(full_images[0]))
         out_dim = max(drone_img.shape[0], drone_img.shape[1]) // 8
 
-        if args.all_patches_diff_drone:
+        if args.should_crop:
+            divide_to_hierarchy_of_squares(full_pair, os.path.basename(ortho_path), out_dim=out_dim, stride=out_dim // 3, out_dir=os.path.join(root_dir), angles=[0, 90, 180, 270], drone_img_path=drone_img_path, drone_scale=drone_scale)
+            # sys.exit(-1)
+        elif args.all_patches_diff_drone:
             copy_pairs_and_replace_drone_img(args.all_patches_diff_drone, args.all_patches, drone_img_path, drone_scale)
             # sys.exit(-1)
 
@@ -462,14 +470,6 @@ if __name__ == "__main__":
             # move_random_pairs(src_pairs_dir=args.all_patches, dst_pairs_dir=args.root_dir, amount_to_move=amount_to_move, best_fit_patch_name="pairs_2116")
             move_random_pairs(src_pairs_dir=args.all_patches, dst_pairs_dir=args.root_dir, amount_to_move=amount_to_move, best_fit_patch_name="pairs_2081")
 
-        # divide_to_hierarchy_of_squares(full_pair, os.path.basename(ortho_path), out_dim=out_dim, stride=out_dim // 3, out_dir=os.path.join(root_dir), angles=[0, 90, 180, 270], drone_img_path=drone_img_path, drone_scale=drone_scale)
-        # sys.exit(-1)
-
-        # prepare directories
-        root_dir = Path(args.root_dir)
-        pair_dirs = [x for x in root_dir.iterdir() if x.is_dir()]
-        save_dir = Path(args.save_dir)
-        save_dir.mkdir(exist_ok=True, parents=True)
 
         # lists that are used to find the best matching patch, based on the two scores.
         # index 0: point sim score, index 1: homography score, index 2: multiplied
