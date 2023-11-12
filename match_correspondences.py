@@ -264,6 +264,8 @@ def find_correspondences(image_path1: str, image_path2: str, num_pairs: int = 10
     n_clusters = min(num_pairs, len(all_keys_together))  # if not enough pairs, show all found pairs.
     length = np.sqrt((all_keys_together ** 2).sum(axis=1))[:, None]
     normalized = all_keys_together / length
+    if normalized.shape[0] == 0:
+        return [], [], image1_pil, image2_pil, 0, 0
     kmeans = KMeans(n_clusters=n_clusters, random_state=0).fit(normalized)
     bb_topk_sims = np.full((n_clusters), -np.inf)
     bb_indices_to_show = np.full((n_clusters), -np.inf)
@@ -436,7 +438,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    drone_scale = 0.125
+    # drone_scale = 0.125
+    drone_scale = 1
 
     with torch.no_grad():
         # prepare directories
@@ -456,7 +459,8 @@ if __name__ == "__main__":
             ortho_path = str(full_images[1])
             drone_img_path = str(full_images[0])
             drone_img = cv.imread(str(full_images[0]))
-        out_dim = max(drone_img.shape[0], drone_img.shape[1]) // 8
+        # out_dim = max(drone_img.shape[0], drone_img.shape[1]) // 8
+        out_dim = max(drone_img.shape[0], drone_img.shape[1]) // 2
 
         if args.should_crop:
             divide_to_hierarchy_of_squares(full_pair, os.path.basename(ortho_path), out_dim=out_dim, stride=out_dim // 3, out_dir=os.path.join(root_dir), angles=[0, 90, 180, 270], drone_img_path=drone_img_path, drone_scale=drone_scale)
@@ -470,6 +474,7 @@ if __name__ == "__main__":
             # move_random_pairs(src_pairs_dir=args.all_patches, dst_pairs_dir=args.root_dir, amount_to_move=amount_to_move, best_fit_patch_name="pairs_2116")
             move_random_pairs(src_pairs_dir=args.all_patches, dst_pairs_dir=args.root_dir, amount_to_move=amount_to_move, best_fit_patch_name="pairs_2081")
 
+        pair_dirs = [x for x in root_dir.iterdir() if x.is_dir()]
 
         # lists that are used to find the best matching patch, based on the two scores.
         # index 0: point sim score, index 1: homography score, index 2: multiplied
